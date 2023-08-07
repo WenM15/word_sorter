@@ -4,25 +4,44 @@ using namespace std;
 
 int main() {
 
-	bool extractionDone = false;
-	while (!extractionDone) {
-		// Extraction
-		char input;
-		cin.get(input);
+	bool redo = true;
+	while (redo) {
+		// Input
+		cout << "Input: " << endl;
 
-		// Filtering before storage
-		if ((input >= 'a' && input <= 'z') || (input >= 'A' && input <= 'Z')) {
-			cout << "Input is alphabet" << endl;
-		}
-		else if (input == ' ' || input == '\t') {
-			cout << "Input is space or tab" << endl;
-		}
-		else if (input == '\n') {
-			extractionDone = true;
-			cout << "Input is newline" << endl;
-		}
-		else {
-			cout << "Input is not alphabet or space or newline" << endl;
-		}
-	}
-}
+		bool extractionDone = false;
+		while (!extractionDone) {
+			// Extraction
+			char input;
+			cin.get(input);
+
+			// Filtering before storage
+			if ((input >= 'a' && input <= 'z') || (input >= 'A' && input <= 'Z')) {
+				cout << input;
+			}
+			else if (input == ' ' || input == '\t') {
+				cout << endl;
+			}
+			else if (input == '\n') {
+				extractionDone = true;
+				redo = false;
+			}
+			else {
+				// Clear the buffer
+				bool newlineFound = false;
+				while (!newlineFound) {
+					cin.get(input);
+					if (input == '\n') {
+						newlineFound = true;
+					}
+				}
+
+				// Clear storage here
+				extractionDone = true;
+
+				cout << endl << endl;
+			}
+		}//while(!extractionDone)
+	}//while(redo)
+
+}//main()

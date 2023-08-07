@@ -9,6 +9,7 @@ int main() {
 		// Input
 		cout << "Input: " << endl;
 
+		bool isSpace = false;
 		bool extractionDone = false;
 		while (!extractionDone) {
 			// Extraction
@@ -17,16 +18,33 @@ int main() {
 
 			// Filtering before storage
 			if ((input >= 'a' && input <= 'z') || (input >= 'A' && input <= 'Z')) {
-				cout << input;
+				if (isSpace) {
+					cout << "There's a space before this char" << endl;
+					// Add word to list
+				}
+				else {
+					cout << "There's not a space before this char" << endl;
+					// Continue adding characters
+				}
+				isSpace = false;
 			}
 			else if (input == ' ' || input == '\t') {
-				cout << endl;
+				if (isSpace) {
+					cout << "There is a space before this space" << endl;
+					isSpace = true;
+					// Do nothing
+				}
+				else {
+					cout << "There is a letter before this space" << endl;
+					isSpace = true;
+					// End of word, add \0 to the character array
+				}
 			}
 			else if (input == '\n') {
 				extractionDone = true;
 				redo = false;
 			}
-			else {
+			else  {
 				// Clear the buffer
 				bool newlineFound = false;
 				while (!newlineFound) {
@@ -38,9 +56,8 @@ int main() {
 
 				// Clear storage here
 				extractionDone = true;
-
-				cout << endl << endl;
 			}
+		
 		}//while(!extractionDone)
 	}//while(redo)
 

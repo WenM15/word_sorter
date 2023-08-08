@@ -245,24 +245,24 @@ int main() {
 			while (!compareDone) {
 				// Since we cannot compare lowercase and uppercase letters using the inequality operator,
 				// we have to change the letters to a standard, either lowercase or uppercase.
-				// The lowercase standard will be used.
+				// The uppercase standard will be used.
 				// The values are copied for comparison because I want to preserve the original values.
 				char curChar, bubbleChar;
 
-				if (listPointer[curIndex][charI] >= 65) {
-					curChar = listPointer[curIndex][charI] + 32;
+				if (listPointer[curIndex][charI] >= 97) {
+					curChar = listPointer[curIndex][charI] - 32;
 				}
 				else {
 					curChar = listPointer[curIndex][charI];
 				}
 
-				if (listPointer[curIndex + 1][charI] >= 65) {
-					bubbleChar = listPointer[curIndex + 1][charI] + 32;
+				if (listPointer[curIndex + 1][charI] >= 97) {
+					bubbleChar = listPointer[curIndex + 1][charI] - 32;
 				}
 				else {
 					bubbleChar = listPointer[curIndex + 1][charI];
 				}
-
+				cout << curChar << " " << bubbleChar << endl;
 				// Compare
 				// Case 1: equal
 				if (curChar == bubbleChar) {

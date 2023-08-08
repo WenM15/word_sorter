@@ -262,7 +262,7 @@ int main() {
 				else {
 					bubbleChar = listPointer[curIndex + 1][charI];
 				}
-				cout << curChar << " " << bubbleChar << endl;
+
 				// Compare
 				// Case 1: equal
 				if (curChar == bubbleChar) {

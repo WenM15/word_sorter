@@ -5,6 +5,7 @@ using namespace std;
 int main() {
 	// Create a pointer to point to an array of pointers
 	char** listPointer = nullptr;
+	char input;
 
 	bool redo = true;
 	while (redo) {
@@ -13,7 +14,9 @@ int main() {
 
 		// Define starting memory size for list
 		int listSize = 10;
-		
+		// Define starting memory size for words
+		int wordSize = 10;
+
 		// Preallocate memory for 10 words
 		listPointer = (char**)::operator new(listSize * sizeof(char*));//
 		
@@ -22,15 +25,11 @@ int main() {
 		// Set a starting charIndex for each word
 		int charIndex = 0;
 
-		// Define starting memory size for words
-		int wordSize = 10;
-		
 		bool isSpace = false;
 		bool extractionDone = false;
 		while (!extractionDone) {
 
 			// Extraction
-			char input;
 			cin.get(input);
 
 			// Filtering before storage
@@ -150,6 +149,7 @@ int main() {
 				redo = false;
 			}
 			else {
+				cout << "One or more of your input words are not all alphabets. Please try again.\n\n";
 				// Clear the buffer
 				bool newlineFound = false;
 				while (!newlineFound) {
@@ -160,6 +160,13 @@ int main() {
 				}
 
 				// Clear storage here
+				if (charIndex != 0) {
+					for (int wordI = 0; wordI < wordIndex; ++wordI) {
+						::operator delete(listPointer[wordI]);
+					}
+				}
+				::operator delete(listPointer);
+				
 				extractionDone = true;
 			}
 

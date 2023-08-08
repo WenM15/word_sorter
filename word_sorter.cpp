@@ -137,8 +137,51 @@ int main() {
 				
 				++wordIndex;
 				if (wordIndex == listSize) {
-					// Allocate more memory for list
+					// Allocate more memory for list (Repeated in alphabet, consider writing a function)
+					char** temp = (char**)::operator new(listSize * sizeof(char*));
+					for (int wordI = 0; wordI < listSize; ++wordI) {
+						// Copy characters to the temporary array
+						int str_length = 0;
+						for (int charI = 0; listPointer[wordI][charI] != '\0'; ++charI) {
+							++str_length;
+						}
+						temp[wordI] = (char*)::operator new((str_length + 1) * sizeof(char));
+						int charI = 0;
+						while (listPointer[wordI][charI] != '\0') {
+							temp[wordI][charI] = listPointer[wordI][charI];
+							++charI;
+						}
+						temp[wordI][charI] = '\0';
+
+						// Deallocate memory for listPointer
+						::operator delete(listPointer[wordI]);
+					}
+
+					// Double the memory size for list
+					listSize *= 2;
+					listPointer = (char**)::operator new(listSize * sizeof(char*));
+
+					// Copy the list's contents in temporary array back to the list
+					// Similar to how the list was originally copied to temporary array
+					for (int wordI = 0; wordI < listSize / 2; ++wordI) {
+						// Copying back
+						int str_length = 0;
+						for (int charI = 0; temp[wordI][charI] != '\0'; ++charI) {
+							++str_length;
+						}
+						listPointer[wordI] = (char*)::operator new((str_length + 1) * sizeof(char));
+						int charI = 0;
+						while (temp[wordI][charI] != '\0') {
+							listPointer[wordI][charI] = temp[wordI][charI];
+							++charI;
+						}
+						listPointer[wordI][charI] = '\0';
+
+						// Deallocate memory for temp array
+						::operator delete(temp[wordI]);
+					}
 				}
+
 				// Preallocate memory for 10 characters
 				listPointer[wordIndex] = (char*)::operator new(wordSize * sizeof(char));
 
@@ -190,5 +233,76 @@ int main() {
 	}
 	cout << endl << "Number of words: " << numString << endl;
 
+	// Bubble sort
+	for (int endIndex = numString - 1; endIndex > 0; --endIndex) {
 
+		char* temp;
+
+		for (int curIndex = 0; curIndex < endIndex; ++curIndex) {
+
+			int charI = 0;
+			bool compareDone = false;
+			while (!compareDone) {
+				// Since we cannot compare lowercase and uppercase letters using the inequality operator,
+				// we have to change the letters to a standard, either lowercase or uppercase.
+				// The lowercase standard will be used.
+				// The values are copied for comparison because I want to preserve the original values.
+				char curChar, bubbleChar;
+
+				if (listPointer[curIndex][charI] >= 65) {
+					curChar = listPointer[curIndex][charI] + 32;
+				}
+				else {
+					curChar = listPointer[curIndex][charI];
+				}
+
+				if (listPointer[curIndex + 1][charI] >= 65) {
+					bubbleChar = listPointer[curIndex + 1][charI] + 32;
+				}
+				else {
+					bubbleChar = listPointer[curIndex + 1][charI];
+				}
+
+				// Compare
+				// Case 1: equal
+				if (curChar == bubbleChar) {
+					if (curChar == '\0') {
+						compareDone = true;
+					}
+					else {
+						++charI;
+					}
+				}// Case 2: not equal
+				else {
+					if (curChar > bubbleChar) {
+						temp = listPointer[curIndex + 1];
+						listPointer[curIndex + 1] = listPointer[curIndex];
+						listPointer[curIndex] = temp;
+						compareDone = true;
+					}
+					else if (curChar == '\0') {
+						compareDone = true;
+					}
+					else if (bubbleChar == '\0') {
+						temp = listPointer[curIndex + 1];
+						listPointer[curIndex + 1] = listPointer[curIndex];
+						listPointer[curIndex] = temp;
+						compareDone = true;
+					}
+					else {
+						compareDone = true;
+					}
+				}
+			}
+		}
+	}
+	
+	cout << endl << "Sorted words in ascending order: " << endl;
+	for (int wordIndex = 0; listPointer[wordIndex][0] != '\0'; ++wordIndex) {
+		for (int charIndex = 0; listPointer[wordIndex][charIndex] != '\0'; ++charIndex) {
+			cout << listPointer[wordIndex][charIndex];
+		}
+		cout << " ";
+	}
+	cout << endl;
 }//main()

@@ -36,7 +36,11 @@ int main() {
 			// Filtering before storage
 			if ((input >= 'a' && input <= 'z') || (input >= 'A' && input <= 'Z')) {
 				if (isSpace) {
+					//Reset wordSize to 10;
+					wordSize = 10;
+					//Increment wordIndex to store new word
 					++wordIndex;
+
 					if (wordIndex == listSize) {
 						// Allocate more memory for list
 						
@@ -86,7 +90,8 @@ int main() {
 					}
 					charIndex = 0;
 
-				}
+				}// if(!isSpace)
+
 				// Preallocate memory for 10 characters
 				if (charIndex == 0) {
 					listPointer[wordIndex] = (char*)::operator new(wordSize * sizeof(char));//
@@ -97,6 +102,23 @@ int main() {
 				++charIndex;
 				if (charIndex == wordSize) {
 					// Allocate more memory for word
+					// Copy word's content to a temporary array
+					char* temp = (char*)::operator new(wordSize * sizeof(char));
+					for (int charI = 0; charI < wordSize; charI++) {
+						temp[charI] = listPointer[wordIndex][charI];
+					}
+					::operator delete(listPointer[wordIndex]);
+					
+					// Double the memory size for the word
+					wordSize *= 2;
+					listPointer[wordIndex] = (char*)::operator new(wordSize * sizeof(char));
+
+					// Copy the word's contents in temporary array back to the word
+					for (int charI = 0; charI < wordSize/2; charI++) {
+						listPointer[wordIndex][charI] = temp[charI];
+					}
+					
+					::operator delete(temp);
 				}
 
 				isSpace = false;

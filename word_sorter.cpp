@@ -140,7 +140,7 @@ int main() {
 					// Allocate more memory for list
 				}
 				// Preallocate memory for 10 characters
-				listPointer[wordIndex] = (char*)malloc(wordSize * sizeof(char));//
+				listPointer[wordIndex] = (char*)::operator new(wordSize * sizeof(char));
 
 				// Creating a word that only has '\0', this word will denote the end of the list
 				listPointer[wordIndex][0] = '\0';
@@ -173,12 +173,22 @@ int main() {
 		}//while(!extractionDone)
 	}//while(redo)
 
-	cout << "Output: " << endl;
+	cout << endl << "Listing out words in the storage before sorting: " << endl;
 	for (int wordIndex = 0; listPointer[wordIndex][0] != '\0'; ++wordIndex) {
 		for (int charIndex = 0; listPointer[wordIndex][charIndex] != '\0'; ++charIndex) {
 			cout << listPointer[wordIndex][charIndex];
 		}
 		cout << " ";
 	}
+	cout << endl;
+
+	int numString = 0;
+	int wordI = 0;
+	while (listPointer[wordI][0] != '\0') {
+		++numString;
+		++wordI;
+	}
+	cout << endl << "Number of words: " << numString << endl;
+
 
 }//main()

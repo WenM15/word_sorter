@@ -12,18 +12,18 @@ int main() {
 		cout << "Input: " << endl;
 
 		// Define starting memory size for list
-		size_t listSize = 10;
+		int listSize = 10;
 		
 		// Preallocate memory for 10 words
 		listPointer = (char**)::operator new(listSize * sizeof(char*));//
 		
 		// Set a starting wordIndex for list
 		int wordIndex = 0;
-		//Set a starting charIndex for each word
+		// Set a starting charIndex for each word
 		int charIndex = 0;
 
 		// Define starting memory size for words
-		size_t wordSize = 10;
+		int wordSize = 10;
 		
 		bool isSpace = false;
 		bool extractionDone = false;
@@ -39,6 +39,50 @@ int main() {
 					++wordIndex;
 					if (wordIndex == listSize) {
 						// Allocate more memory for list
+						
+						// Create temporary array to store list's contents
+						char** temp = (char**)::operator new(listSize * sizeof(char*));
+						for (int wordI = 0; wordI < listSize; ++wordI) {
+							// Copy characters to the temporary array
+							int str_length = 0;
+							for (int charI = 0; listPointer[wordI][charI] != '\0'; ++charI) {
+								++str_length;
+							}
+							temp[wordI] = (char*)::operator new((str_length + 1) * sizeof(char));
+							int charI = 0;
+							while(listPointer[wordI][charI] != '\0'){
+								temp[wordI][charI] = listPointer[wordI][charI];
+								++charI;
+							}
+							temp[wordI][charI] = '\0';
+
+							// Deallocate memory for listPointer
+							::operator delete(listPointer[wordI]);
+						}
+
+						// Double the memory size for list
+						listSize *= 2;
+						listPointer = (char**)::operator new(listSize * sizeof(char*));
+
+						// Copy the list's contents in temporary array back to the list
+						// Similar to how the list was originally copied to temporary array
+						for (int wordI = 0; wordI < listSize/2; ++wordI) {
+							// Copying back
+							int str_length = 0;
+							for (int charI = 0; temp[wordI][charI] != '\0'; ++charI) {
+								++str_length;
+							}
+							listPointer[wordI] = (char*)::operator new((str_length + 1) * sizeof(char));
+							int charI = 0;
+							while (temp[wordI][charI] != '\0') {
+								listPointer[wordI][charI] = temp[wordI][charI];
+								++charI;
+							}
+							listPointer[wordI][charI] = '\0';
+
+							// Deallocate memory for temp array
+							::operator delete(temp[wordI]);
+						}
 					}
 					charIndex = 0;
 
@@ -49,7 +93,7 @@ int main() {
 				}
 
 				listPointer[wordIndex][charIndex] = input;
-				cout << wordIndex << " " << charIndex << " " << listPointer[wordIndex][charIndex] << endl;
+	
 				++charIndex;
 				if (charIndex == wordSize) {
 					// Allocate more memory for word
@@ -69,7 +113,7 @@ int main() {
 				if (!isSpace) {
 					listPointer[wordIndex][charIndex] = '\0';
 				}
-				// Add a '\0' to first character of a new c-string to indicate the end of the list
+				
 				++wordIndex;
 				if (wordIndex == listSize) {
 					// Allocate more memory for list
@@ -100,11 +144,12 @@ int main() {
 		}//while(!extractionDone)
 	}//while(redo)
 
+	cout << "Output: " << endl;
 	for (int wordIndex = 0; listPointer[wordIndex][0] != '\0'; ++wordIndex) {
 		for (int charIndex = 0; listPointer[wordIndex][charIndex] != '\0'; ++charIndex) {
-			cout << "listPointer[" << wordIndex << "][" << charIndex << "]: " << listPointer[wordIndex][charIndex] << ", ";
+			cout << listPointer[wordIndex][charIndex];
 		}
-		cout << endl;
+		cout << " ";
 	}
-	
+
 }//main()
